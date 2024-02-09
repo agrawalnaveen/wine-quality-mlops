@@ -1,0 +1,22 @@
+data_ingestion:
+  data_url: 'https://archive.ics.uci.edu/static/public/186/wine+quality.zip'
+  zip_data_file_path: 'data/raw/zip_raw_wine_data.zip'
+  unzip_data_path: 'data/raw/unzip_raw_wine_data'
+
+data_validation:
+  project_root_dir: './'
+  checkpoint_name: 'red_wine_checkpoint'
+  validation_result_file_path: 'data/validation_result.txt'
+
+data_transformation:
+  raw_red_wine_data_file_path: 'data/raw/unzip_raw_wine_data/winequality-red.csv'
+  transformed_data_dir: 'data/transformed'
+  test_size: 0.2
+
+train:
+  train_data_file_path: 'data/transformed/train.csv'
+  test_data_file_path: 'data/transformed/test.csv'
+  target_column: 'quality'
+  alpha: 0.5
+  l1_ratio: 0.3
+  model_path: 'models/ElasticNet'
