@@ -1,3 +1,4 @@
+import json
 import logging
 # import logging.config
 import yaml
@@ -36,8 +37,13 @@ alpha = config['train']['alpha']
 l1_ratio = config['train']['l1_ratio']
 model_path = Path(config['train']['model_path'])
 
+## Config variables for model evaluation
+metrics_file_path = config['evaluate']['metrics_file_path']
+MLFLOW_TRACKING_URI = config['track']['MLFLOW_TRACKING_URI']
+experiment_name = config['track']['experiment_name']
+
 # Import modules
-from wine import data, train
+from wine import data, model
 
 # Download data
 data.download_data(data_url, zip_data_file_path, unzip_data_path)
@@ -58,11 +64,26 @@ else:
     raise Exception("Unsuccessful data validation")
 
 # Create, train, and save model
-train.train(train_data_file_path=train_data_file_path,
-            test_data_file_path=test_data_file_path,
+params = {
+    'alpha': alpha,
+    'l1_ratio': l1_ratio,
+}
+model.train(train_data_file_path=train_data_file_path,
             target_column=target_column,
-            alpha=alpha, l1_ratio=l1_ratio,
+            **params,
             model_path=model_path)
+
+model.evaluate(model_path=model_path,
+               test_data_file_path=test_data_file_path,
+               target_column=target_column,
+               metrics_file_path=metrics_file_path)
+
+with open(metrics_file_path, 'r') as metrics_file:
+        metrics = json.load(metrics_file)
+
+model.track_with_mlflow(uri=MLFLOW_TRACKING_URI,experiment_name=experiment_name,
+                        params=params, metrics=metrics)
+
 
 # # You can also use the root logger if needed
 # logging.info("Debug message from the main script")

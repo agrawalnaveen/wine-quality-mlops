@@ -17,6 +17,13 @@ train:
   train_data_file_path: 'data/transformed/train.csv'
   test_data_file_path: 'data/transformed/test.csv'
   target_column: 'quality'
-  alpha: 0.5
-  l1_ratio: 0.3
+  alpha: 0.7
+  l1_ratio: 0.5
   model_path: 'models/ElasticNet'
+
+evaluate:
+  metrics_file_path: 'models/metrics.json'
+
+track:
+  experiment_name: 'Wine_Quality_ElasticNet'
+  MLFLOW_TRACKING_URI: 'https://dagshub.com/agrawalnaveen/wine-quality-mlops.mlflow'
